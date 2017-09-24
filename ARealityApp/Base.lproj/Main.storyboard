@@ -34,6 +34,13 @@
                                     <action selector="restartButtonTap:" destination="BV1-FR-VrT" eventType="touchUpInside" id="RHs-8V-7h5"/>
                                 </connections>
                             </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6g5-ou-EkS">
+                                <rect key="frame" x="63" y="180" width="42" height="21"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
@@ -47,6 +54,7 @@
                         <viewLayoutGuide key="safeArea" id="NIF-EU-tin"/>
                     </view>
                     <connections>
+                        <outlet property="labelT" destination="6g5-ou-EkS" id="rVk-6U-h6b"/>
                         <outlet property="restartButton" destination="1y3-gX-hDb" id="opL-Ge-rTn"/>
                         <outlet property="sceneView" destination="WHG-62-m4U" id="gQd-Lh-Dr1"/>
                     </connections>

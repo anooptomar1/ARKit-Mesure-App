@@ -17,6 +17,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     
     @IBOutlet var sceneView: ARSCNView!
     @IBOutlet weak var restartButton: UIButton!
+    @IBOutlet weak var labelT: UILabel!
     
     @IBAction func restartButtonTap(_ sender: UIButton) {
         resetTracking()
@@ -112,6 +113,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         ballNode.position = position
         sceneView.scene.rootNode.addChildNode(ballNode)
         objects.append(ballNode)
+        
     }
     
     /* func setupARSession() {
@@ -174,17 +176,23 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     
     func session(_ session: ARSession, didUpdate frame: ARFrame) {
         // let currentTransform = frame.camera.transform
+        let nodePos1 = objects[0].presentation.simdTransform
+        let nodePos2 = frame.camera.transform
+        
+        let distance = nodePos1 - nodePos2
+        labelT.text = "\(distance)"
+        print("Hi")
 
     }
     
     func session(_ session: ARSession, didFailWithError error: Error) {
         // Present an error message to the user
-        
+
     }
     
     func sessionWasInterrupted(_ session: ARSession) {
         // Inform the user that the session has been interrupted, for example, by presenting an overlay
-        
+
     }
     
     func sessionInterruptionEnded(_ session: ARSession) {
