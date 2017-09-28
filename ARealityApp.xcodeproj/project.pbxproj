@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		9A42A3EA1F79374C0011B446 /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A42A3E91F79374C0011B446 /* Utilities.swift */; };
+		9A727B5C1F7D46E3001F5C28 /* FocusSquare.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A727B5B1F7D46E3001F5C28 /* FocusSquare.swift */; };
 		9AD5249C1F76CC3800787CC4 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AD5249B1F76CC3800787CC4 /* AppDelegate.swift */; };
 		9AD5249E1F76CC3800787CC4 /* art.scnassets in Resources */ = {isa = PBXBuildFile; fileRef = 9AD5249D1F76CC3800787CC4 /* art.scnassets */; };
 		9AD524A01F76CC3800787CC4 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AD5249F1F76CC3800787CC4 /* ViewController.swift */; };
@@ -35,6 +37,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		9A42A3E91F79374C0011B446 /* Utilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utilities.swift; sourceTree = "<group>"; };
+		9A727B5B1F7D46E3001F5C28 /* FocusSquare.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FocusSquare.swift; sourceTree = "<group>"; };
 		9AD524981F76CC3800787CC4 /* ARealityApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ARealityApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9AD5249B1F76CC3800787CC4 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		9AD5249D1F76CC3800787CC4 /* art.scnassets */ = {isa = PBXFileReference; lastKnownFileType = wrapper.scnassets; path = art.scnassets; sourceTree = "<group>"; };
@@ -102,7 +106,9 @@
 				9AD5249B1F76CC3800787CC4 /* AppDelegate.swift */,
 				9AD5249D1F76CC3800787CC4 /* art.scnassets */,
 				9AD5249F1F76CC3800787CC4 /* ViewController.swift */,
+				9A42A3E91F79374C0011B446 /* Utilities.swift */,
 				9AD524A11F76CC3800787CC4 /* Main.storyboard */,
+				9A727B5B1F7D46E3001F5C28 /* FocusSquare.swift */,
 				9AD524A41F76CC3800787CC4 /* Assets.xcassets */,
 				9AD524A61F76CC3800787CC4 /* LaunchScreen.storyboard */,
 				9AD524A91F76CC3800787CC4 /* Info.plist */,
@@ -263,6 +269,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9A42A3EA1F79374C0011B446 /* Utilities.swift in Sources */,
+				9A727B5C1F7D46E3001F5C28 /* FocusSquare.swift in Sources */,
 				9AD524A01F76CC3800787CC4 /* ViewController.swift in Sources */,
 				9AD5249C1F76CC3800787CC4 /* AppDelegate.swift in Sources */,
 			);

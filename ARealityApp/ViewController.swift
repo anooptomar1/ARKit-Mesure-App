@@ -18,27 +18,61 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     @IBOutlet var sceneView: ARSCNView!
     @IBOutlet weak var restartButton: UIButton!
     @IBOutlet weak var labelT: UILabel!
+    @IBOutlet weak var trackingState: UILabel!
+    
+    // @IBOutlet weak var textEfView: UIVisualEffectView!
+    
+    private var startNode: SCNNode?
+    private var endNode: SCNNode?
     
     @IBAction func restartButtonTap(_ sender: UIButton) {
         resetTracking()
         resetObjects()
-   /*     timer.invalidate()
-        DispatchQueue.main.async {
-            self.statusLabel.text = " Resetting "
-            self.statusLabel.backgroundColor = UIColor(white: 1, alpha: 0.5)
-            self.timer = Timer.scheduledTimer(timeInterval: 6, target: self, selector: #selector(self.timerAction), userInfo: nil, repeats: false)
-        } */
+        setupFocusSquare()
+        setupUIControls()
     }
     
     @objc func timerAction() {
-      //  statusLabel.text = ""
-      //  statusLabel.backgroundColor = UIColor.clear
+
     }
     
     var WorldConf: ARWorldTrackingConfiguration {
         return ARWorldTrackingConfiguration()
     }
-
+    
+    var focusSquare = FocusSquare()
+    
+    func setupFocusSquare() {
+        focusSquare.unhide()
+        focusSquare.removeFromParentNode()
+        sceneView.scene.rootNode.addChildNode(focusSquare)
+    }
+    
+    func setupUIControls() {
+        // Set appearance of message output panel
+        labelT.layer.cornerRadius = 3
+        labelT.clipsToBounds = true
+        labelT.isHidden = true
+        labelT.backgroundColor = .white
+        labelT.sizeToFit()
+        labelT.text = ""
+        trackingState.text = ""
+        trackingState.sizeToFit()
+        trackingState.layer.cornerRadius = 3
+        trackingState.clipsToBounds = true
+        trackingState.isHidden = true
+        //textEfView.sizeToFit()
+        
+        
+    }
+    
+    func updateFocusSquare() {
+        let (worldPosition, planeAnchor, _) = worldPositionFromScreenPosition(view.center, objectPos: focusSquare.position)
+        if let worldPosition = worldPosition {
+            focusSquare.update(for: worldPosition, planeAnchor: planeAnchor, camera: sceneView.session.currentFrame?.camera)
+        }
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -50,29 +84,106 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         sceneView.showsStatistics = false
         
         // Create a new scene
-        setupCamera()
+        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(ViewController.handleTapGesture))
+        view.addGestureRecognizer(tapGestureRecognizer)
+        
         let scene = SCNScene(named: "art.scnassets/ship.scn")!
         
         // Set the scene to the view
         sceneView.scene = scene
         
         // Set up scene content.
-        
-        /*
-         The `sceneView.automaticallyUpdatesLighting` option creates an
-         ambient light source and modulates its intensity. This sample app
-         instead modulates a global lighting environment map for use with
-         physically based materials, so disable automatic lighting.
-         */
-
+        setupCamera()
+        resetTracking()
+        resetObjects()
+        setupFocusSquare()
+        setupUIControls()
     }
-
     
-   /* func reset() {
-        sceneView.session.run(configuration, options: [ARSession.RunOptions.resetTracking, ARSession.RunOptions.removeExistingAnchors])
-    } */
+    @objc func handleTapGesture(sender: UITapGestureRecognizer) {
+        if sender.state != .ended {
+            return
+        }
+        guard let currentFrame = sceneView.session.currentFrame else {
+            return
+        }
+        
+        if let endNode = endNode {
+            // Reset
+            startNode?.removeFromParentNode()
+            self.startNode = nil
+            endNode.removeFromParentNode()
+            self.endNode = nil
+            resetTracking()
+            resetObjects()
+            setupFocusSquare()
+            setupUIControls()
+            return
+        }
+        
+        let planeHitTestResults = sceneView.hitTest(view.center, types: .existingPlaneUsingExtent)
+        if let result = planeHitTestResults.first {
+            let hitPosition = SCNVector3.positionFromTransform(result.worldTransform)
+            let sphere = SCNSphere(radius: 0.005)
+            sphere.firstMaterial?.diffuse.contents = UIColor.white
+            sphere.firstMaterial?.lightingModel = .constant
+            sphere.firstMaterial?.isDoubleSided = true
+            let node = SCNNode(geometry: sphere)
+            node.position = hitPosition
+            sceneView.scene.rootNode.addChildNode(node)
+            
+            if let startNode = startNode {
+                endNode = node
+                let vector = startNode.position - node.position
+                let formatter = NumberFormatter()
+                formatter.numberStyle = .decimal
+                formatter.roundingMode = .ceiling
+                formatter.maximumFractionDigits = 2
+                // Scene units map to meters in ARKit.
+                labelT.text = " Distance: " + formatter.string(from: NSNumber(value: vector.length()))! + "m "
+                labelT.isHidden = false
+                labelT.sizeToFit()
+                
+            }
+            else {
+                startNode = node
+            }
+        }
+        else {
+            // Create a transform with a translation of 0.1 meters (10 cm) in front of the camera
+            var translation = matrix_identity_float4x4
+            translation.columns.3.z = -0.1
+            
+            // Add a node to the session
+            let sphere = SCNSphere(radius: 0.005)
+            sphere.firstMaterial?.diffuse.contents = UIColor.white
+            
+            sphere.firstMaterial?.lightingModel = .constant
+            sphere.firstMaterial?.isDoubleSided = true
+            let sphereNode = SCNNode(geometry: sphere)
+            sphereNode.simdTransform = simd_mul(currentFrame.camera.transform, translation)
+            sceneView.scene.rootNode.addChildNode(sphereNode)
+            
+            if let startNode = startNode {
+                endNode = sphereNode
+                labelT.text = " Distance: " + String(format: "%.2f", distance(startNode: startNode, endNode: sphereNode)) + "m "
+                labelT.isHidden = false
+                labelT.sizeToFit()
+            }
+            else {
+                startNode = sphereNode
+            }
+        }
+    }
     
-
+    func distance(startNode: SCNNode, endNode: SCNNode) -> Float {
+        let vector = SCNVector3Make(startNode.position.x - endNode.position.x, startNode.position.y - endNode.position.y, startNode.position.z - endNode.position.z)
+        // Scene units map to meters in ARKit.
+        return sqrtf(vector.x * vector.x + vector.y * vector.y + vector.z * vector.z)
+    }
+    
+    var dragOnInfinitePlanesEnabled = false
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
@@ -82,11 +193,6 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         // Run the view's session
         sceneView.session.run(configuration)
         
-      /*  DispatchQueue.main.async {
-            self.statusLabel.text = " Loading "
-            self.statusLabel.backgroundColor = UIColor(white: 1, alpha: 0.5)
-            self.timer = Timer.scheduledTimer(timeInterval: 10, target: self, selector: #selector(self.timerAction), userInfo: nil, repeats: false)
-        } */
     }
     
     func resetTracking() {
@@ -96,9 +202,15 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     }
     
     func resetObjects() {
-        for obj in objects {
-            obj.removeFromParentNode()
-        }
+        
+        startNode?.removeFromParentNode()
+        endNode?.removeFromParentNode()
+        startNode = nil
+        endNode = nil
+        
+    //    for obj in objects {
+    //        obj.removeFromParentNode()
+    //    }
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -107,38 +219,48 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         resetTracking()
     }
     
+    func renderer(_ renderer: SCNSceneRenderer, updateAtTime time: TimeInterval) {
+        DispatchQueue.main.async {
+            self.updateFocusSquare()
+        }
+    }
+    
     func createBall(position: SCNVector3) {
         let ballShape = SCNSphere(radius: 0.01)
         let ballNode = SCNNode(geometry: ballShape)
         ballNode.position = position
         sceneView.scene.rootNode.addChildNode(ballNode)
         objects.append(ballNode)
-        
     }
-    
-    /* func setupARSession() {
-        
-        let configuration = ARWorldTrackingConfiguration()
-        //configuration.worldAlignment = .gravityAndHeading
-      //  guard let session = sceneView else { print("nill")
-         //   return }
-        session.run(configuration, options: ARSession.RunOptions.resetTracking)
-        
-    } */
     
     var session: ARSession {
         return sceneView.session
     }
     
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+  /*  override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         guard let touch = touches.first else { return }
+        
+        if let endNode = endNode {
+            // Reset
+            startNode?.removeFromParentNode()
+            self.startNode = nil
+            endNode.removeFromParentNode()
+            self.endNode = nil
+            labelT.text = "Distance: ?"
+            return
+        }
         
         let result = sceneView.hitTest(touch.location(in: sceneView),types: [ARHitTestResult.ResultType.featurePoint])
         guard let hitResult = result.last else { return }
         let hitTransform = SCNMatrix4((hitResult.worldTransform))
         let hitVector = SCNVector3Make(hitTransform.m41, hitTransform.m42, hitTransform.m43)
-        createBall(position: hitVector)
-    }
+        // createBall(position: hitVector)
+        
+        if startNode == nil {
+            createBall(position: hitVector)
+        }
+        
+    } */
     
     func setupCamera() {
         guard let camera = sceneView.pointOfView?.camera else {
@@ -162,26 +284,37 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         super.didReceiveMemoryWarning()
         // Release any cached data, images, etc that aren't in use.
     }
-
-    // MARK: - ARSCNViewDelegate
     
-/*
-    // Override to create and configure nodes for anchors added to the view's session.
-    func renderer(_ renderer: SCNSceneRenderer, nodeFor anchor: ARAnchor) -> SCNNode? {
-        let node = SCNNode()
-     
-        return node
+    func session(_ session: ARSession, cameraDidChangeTrackingState camera: ARCamera) {
+        switch camera.trackingState {
+        case .notAvailable:
+            trackingState.text = " Not available "
+            trackingState.isHidden = false
+            trackingState.backgroundColor = .red
+        case .normal:
+            trackingState.text = " Normal "
+            trackingState.isHidden = false
+            trackingState.backgroundColor = .green
+        case .limited(let reason):
+            switch reason {
+            case .excessiveMotion:
+                trackingState.text = " Excessive motion "
+                trackingState.isHidden = false
+            case .insufficientFeatures:
+                trackingState.text = " Insufficient features "
+                trackingState.isHidden = false
+            case .initializing:
+                trackingState.text = " Initializing "
+                trackingState.isHidden = false
+                
+            }
+            trackingState.backgroundColor = .yellow
+            trackingState.isHidden = false
+            
+        }
     }
-*/
     
     func session(_ session: ARSession, didUpdate frame: ARFrame) {
-        // let currentTransform = frame.camera.transform
-        let nodePos1 = objects[0].presentation.simdTransform
-        let nodePos2 = frame.camera.transform
-        
-        let distance = nodePos1 - nodePos2
-        labelT.text = "\(distance)"
-        print("Hi")
 
     }
     
@@ -199,4 +332,80 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         // Reset tracking and/or remove existing anchors if consistent tracking is required
         
     }
+}
+
+
+extension ViewController {
+    
+    // Code from Apple PlacingObjects demo: https://developer.apple.com/sample-code/wwdc/2017/PlacingObjects.zip
+    
+    func worldPositionFromScreenPosition(_ position: CGPoint,
+                                         objectPos: SCNVector3?,
+                                         infinitePlane: Bool = false) -> (position: SCNVector3?, planeAnchor: ARPlaneAnchor?, hitAPlane: Bool) {
+        
+        // -------------------------------------------------------------------------------
+        // 1. Always do a hit test against exisiting plane anchors first.
+        //    (If any such anchors exist & only within their extents.)
+        
+        let planeHitTestResults = sceneView.hitTest(position, types: .existingPlaneUsingExtent)
+        if let result = planeHitTestResults.first {
+            
+            let planeHitTestPosition = SCNVector3.positionFromTransform(result.worldTransform)
+            let planeAnchor = result.anchor
+            
+            // Return immediately - this is the best possible outcome.
+            return (planeHitTestPosition, planeAnchor as? ARPlaneAnchor, true)
+        }
+        
+        // -------------------------------------------------------------------------------
+        // 2. Collect more information about the environment by hit testing against
+        //    the feature point cloud, but do not return the result yet.
+        
+        var featureHitTestPosition: SCNVector3?
+        var highQualityFeatureHitTestResult = false
+        
+        let highQualityfeatureHitTestResults = sceneView.hitTestWithFeatures(position, coneOpeningAngleInDegrees: 18, minDistance: 0.2, maxDistance: 2.0)
+        
+        if !highQualityfeatureHitTestResults.isEmpty {
+            let result = highQualityfeatureHitTestResults[0]
+            featureHitTestPosition = result.position
+            highQualityFeatureHitTestResult = true
+        }
+        
+        // -------------------------------------------------------------------------------
+        // 3. If desired or necessary (no good feature hit test result): Hit test
+        //    against an infinite, horizontal plane (ignoring the real world).
+        
+        if (infinitePlane && dragOnInfinitePlanesEnabled) || !highQualityFeatureHitTestResult {
+            
+            let pointOnPlane = objectPos ?? SCNVector3Zero
+            
+            let pointOnInfinitePlane = sceneView.hitTestWithInfiniteHorizontalPlane(position, pointOnPlane)
+            if pointOnInfinitePlane != nil {
+                return (pointOnInfinitePlane, nil, true)
+            }
+        }
+        
+        // -------------------------------------------------------------------------------
+        // 4. If available, return the result of the hit test against high quality
+        //    features if the hit tests against infinite planes were skipped or no
+        //    infinite plane was hit.
+        
+        if highQualityFeatureHitTestResult {
+            return (featureHitTestPosition, nil, false)
+        }
+        
+        // -------------------------------------------------------------------------------
+        // 5. As a last resort, perform a second, unfiltered hit test against features.
+        //    If there are no features in the scene, the result returned here will be nil.
+        
+        let unfilteredFeatureHitTestResults = sceneView.hitTestWithFeatures(position)
+        if !unfilteredFeatureHitTestResults.isEmpty {
+            let result = unfilteredFeatureHitTestResults[0]
+            return (result.position, nil, false)
+        }
+        
+        return (nil, nil, false)
+    }
+    
 }

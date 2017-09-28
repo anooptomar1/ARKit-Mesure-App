@@ -34,10 +34,21 @@
                                     <action selector="restartButtonTap:" destination="BV1-FR-VrT" eventType="touchUpInside" id="RHs-8V-7h5"/>
                                 </connections>
                             </button>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6g5-ou-EkS">
-                                <rect key="frame" x="63" y="180" width="42" height="21"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="M6V-xY-fcM">
+                                <rect key="frame" x="16" y="26" width="33" height="23"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="23" id="ewa-d0-LdH"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" style="UICTFontTextStyleFootnote"/>
+                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="GeD-wR-rdH">
+                                <rect key="frame" x="16" y="57" width="33" height="23"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="23" id="6Px-Hp-KpG"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" style="UICTFontTextStyleFootnote"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
@@ -45,18 +56,23 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="WHG-62-m4U" firstAttribute="trailing" secondItem="NIF-EU-tin" secondAttribute="trailing" id="Bzd-Cq-vOt"/>
+                            <constraint firstItem="GeD-wR-rdH" firstAttribute="top" secondItem="M6V-xY-fcM" secondAttribute="bottom" constant="8" id="F1P-79-fMt"/>
+                            <constraint firstItem="GeD-wR-rdH" firstAttribute="leading" secondItem="NIF-EU-tin" secondAttribute="leading" constant="16" id="GtX-tx-Ey4"/>
                             <constraint firstItem="NIF-EU-tin" firstAttribute="trailing" secondItem="1y3-gX-hDb" secondAttribute="trailing" constant="10" id="RWY-CO-dLj"/>
                             <constraint firstItem="WHG-62-m4U" firstAttribute="top" secondItem="ex7-X0-gms" secondAttribute="top" id="Tkd-fE-46A"/>
                             <constraint firstItem="WHG-62-m4U" firstAttribute="leading" secondItem="NIF-EU-tin" secondAttribute="leading" id="ab6-Ae-vmq"/>
+                            <constraint firstItem="M6V-xY-fcM" firstAttribute="top" secondItem="NIF-EU-tin" secondAttribute="top" constant="6" id="aik-nR-X1Y"/>
+                            <constraint firstItem="M6V-xY-fcM" firstAttribute="leading" secondItem="NIF-EU-tin" secondAttribute="leading" constant="16" id="iLU-ka-E5u"/>
                             <constraint firstItem="1y3-gX-hDb" firstAttribute="top" secondItem="NIF-EU-tin" secondAttribute="top" id="ozX-7H-g9Z"/>
                             <constraint firstItem="WHG-62-m4U" firstAttribute="bottom" secondItem="NIF-EU-tin" secondAttribute="bottom" id="s8l-Fk-1Us"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="NIF-EU-tin"/>
                     </view>
                     <connections>
-                        <outlet property="labelT" destination="6g5-ou-EkS" id="rVk-6U-h6b"/>
+                        <outlet property="labelT" destination="GeD-wR-rdH" id="8RC-d5-b5S"/>
                         <outlet property="restartButton" destination="1y3-gX-hDb" id="opL-Ge-rTn"/>
                         <outlet property="sceneView" destination="WHG-62-m4U" id="gQd-Lh-Dr1"/>
+                        <outlet property="trackingState" destination="M6V-xY-fcM" id="hmi-NC-ik9"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="SZV-WD-TEh" sceneMemberID="firstResponder"/>
