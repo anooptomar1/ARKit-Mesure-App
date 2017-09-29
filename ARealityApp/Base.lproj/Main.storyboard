@@ -34,35 +34,38 @@
                                     <action selector="restartButtonTap:" destination="BV1-FR-VrT" eventType="touchUpInside" id="RHs-8V-7h5"/>
                                 </connections>
                             </button>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="M6V-xY-fcM">
-                                <rect key="frame" x="16" y="26" width="33" height="23"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Tracking State" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="M6V-xY-fcM">
+                                <rect key="frame" x="16" y="26" width="87.5" height="23"/>
                                 <constraints>
+                                    <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="23" id="4aQ-OF-72O"/>
                                     <constraint firstAttribute="height" constant="23" id="ewa-d0-LdH"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" style="UICTFontTextStyleFootnote"/>
                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="GeD-wR-rdH">
-                                <rect key="frame" x="16" y="57" width="33" height="23"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Distance" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="GeD-wR-rdH">
+                                <rect key="frame" x="16" y="57" width="53" height="23"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="23" id="6Px-Hp-KpG"/>
+                                    <constraint firstAttribute="height" constant="23" id="7zb-tT-2gm"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" style="UICTFontTextStyleFootnote"/>
-                                <nil key="textColor"/>
+                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="WHG-62-m4U" firstAttribute="trailing" secondItem="NIF-EU-tin" secondAttribute="trailing" id="Bzd-Cq-vOt"/>
-                            <constraint firstItem="GeD-wR-rdH" firstAttribute="top" secondItem="M6V-xY-fcM" secondAttribute="bottom" constant="8" id="F1P-79-fMt"/>
-                            <constraint firstItem="GeD-wR-rdH" firstAttribute="leading" secondItem="NIF-EU-tin" secondAttribute="leading" constant="16" id="GtX-tx-Ey4"/>
+                            <constraint firstItem="M6V-xY-fcM" firstAttribute="leading" secondItem="NIF-EU-tin" secondAttribute="leading" constant="16" id="Gml-EM-BOI"/>
+                            <constraint firstItem="GeD-wR-rdH" firstAttribute="top" secondItem="M6V-xY-fcM" secondAttribute="bottom" constant="8" id="JNx-Fl-7vb"/>
                             <constraint firstItem="NIF-EU-tin" firstAttribute="trailing" secondItem="1y3-gX-hDb" secondAttribute="trailing" constant="10" id="RWY-CO-dLj"/>
                             <constraint firstItem="WHG-62-m4U" firstAttribute="top" secondItem="ex7-X0-gms" secondAttribute="top" id="Tkd-fE-46A"/>
+                            <constraint firstItem="GeD-wR-rdH" firstAttribute="leading" secondItem="NIF-EU-tin" secondAttribute="leading" constant="16" id="Vdv-K1-GkI"/>
                             <constraint firstItem="WHG-62-m4U" firstAttribute="leading" secondItem="NIF-EU-tin" secondAttribute="leading" id="ab6-Ae-vmq"/>
                             <constraint firstItem="M6V-xY-fcM" firstAttribute="top" secondItem="NIF-EU-tin" secondAttribute="top" constant="6" id="aik-nR-X1Y"/>
                             <constraint firstItem="M6V-xY-fcM" firstAttribute="leading" secondItem="NIF-EU-tin" secondAttribute="leading" constant="16" id="iLU-ka-E5u"/>
+                            <constraint firstItem="M6V-xY-fcM" firstAttribute="top" secondItem="NIF-EU-tin" secondAttribute="top" constant="6" id="mY1-Nb-K5b"/>
                             <constraint firstItem="1y3-gX-hDb" firstAttribute="top" secondItem="NIF-EU-tin" secondAttribute="top" id="ozX-7H-g9Z"/>
                             <constraint firstItem="WHG-62-m4U" firstAttribute="bottom" secondItem="NIF-EU-tin" secondAttribute="bottom" id="s8l-Fk-1Us"/>
                         </constraints>

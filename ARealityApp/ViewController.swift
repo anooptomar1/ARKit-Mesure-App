@@ -24,6 +24,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     
     private var startNode: SCNNode?
     private var endNode: SCNNode?
+    private var lineNode: SCNNode?
     
     @IBAction func restartButtonTap(_ sender: UIButton) {
         resetTracking()
@@ -53,17 +54,17 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         labelT.layer.cornerRadius = 3
         labelT.clipsToBounds = true
         labelT.isHidden = true
-        labelT.backgroundColor = .white
+        labelT.backgroundColor = UIColor.white
         labelT.sizeToFit()
         labelT.text = ""
+        //textEfView.sizeToFit()
+    }
+    
+    func setupTracking() {
         trackingState.text = ""
         trackingState.sizeToFit()
         trackingState.layer.cornerRadius = 3
         trackingState.clipsToBounds = true
-        trackingState.isHidden = true
-        //textEfView.sizeToFit()
-        
-        
     }
     
     func updateFocusSquare() {
@@ -98,6 +99,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         resetObjects()
         setupFocusSquare()
         setupUIControls()
+        setupTracking()
     }
     
     @objc func handleTapGesture(sender: UITapGestureRecognizer) {
@@ -116,7 +118,6 @@ class ViewController: UIViewController, ARSCNViewDelegate {
             self.endNode = nil
             resetTracking()
             resetObjects()
-            setupFocusSquare()
             setupUIControls()
             return
         }
@@ -124,7 +125,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         let planeHitTestResults = sceneView.hitTest(view.center, types: .existingPlaneUsingExtent)
         if let result = planeHitTestResults.first {
             let hitPosition = SCNVector3.positionFromTransform(result.worldTransform)
-            let sphere = SCNSphere(radius: 0.005)
+            let sphere = SCNSphere(radius: 0.0005)
             sphere.firstMaterial?.diffuse.contents = UIColor.white
             sphere.firstMaterial?.lightingModel = .constant
             sphere.firstMaterial?.isDoubleSided = true
@@ -155,7 +156,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
             translation.columns.3.z = -0.1
             
             // Add a node to the session
-            let sphere = SCNSphere(radius: 0.005)
+            let sphere = SCNSphere(radius: 0.0005)
             sphere.firstMaterial?.diffuse.contents = UIColor.white
             
             sphere.firstMaterial?.lightingModel = .constant
@@ -174,6 +175,23 @@ class ViewController: UIViewController, ARSCNViewDelegate {
                 startNode = sphereNode
             }
         }
+        if let start = startNode, let end = endNode {
+            let line = lineFrom(vector: start.position, toVector: end.position)
+            lineNode = SCNNode(geometry: line)
+            lineNode?.geometry?.firstMaterial?.diffuse.contents = UIColor.blue
+            sceneView.scene.rootNode.addChildNode(lineNode!)
+        }
+    }
+    
+    func lineFrom(vector vector1: SCNVector3, toVector vector2: SCNVector3) -> SCNGeometry {
+        
+        let indices: [Int32] = [0, 1]
+        
+        let source = SCNGeometrySource(vertices: [vector1, vector2])
+        let element = SCNGeometryElement(indices: indices, primitiveType: .line)
+        
+        return SCNGeometry(sources: [source], elements: [element])
+        
     }
     
     func distance(startNode: SCNNode, endNode: SCNNode) -> Float {
@@ -205,12 +223,10 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         
         startNode?.removeFromParentNode()
         endNode?.removeFromParentNode()
+        lineNode?.removeFromParentNode()
         startNode = nil
         endNode = nil
-        
-    //    for obj in objects {
-    //        obj.removeFromParentNode()
-    //    }
+        lineNode = nil
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -299,17 +315,13 @@ class ViewController: UIViewController, ARSCNViewDelegate {
             switch reason {
             case .excessiveMotion:
                 trackingState.text = " Excessive motion "
-                trackingState.isHidden = false
             case .insufficientFeatures:
                 trackingState.text = " Insufficient features "
-                trackingState.isHidden = false
             case .initializing:
                 trackingState.text = " Initializing "
-                trackingState.isHidden = false
                 
             }
             trackingState.backgroundColor = .yellow
-            trackingState.isHidden = false
             
         }
     }
