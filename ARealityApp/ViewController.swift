@@ -116,7 +116,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
             self.startNode = nil
             endNode.removeFromParentNode()
             self.endNode = nil
-            resetTracking()
+          //  resetTracking()
             resetObjects()
             setupUIControls()
             return
@@ -252,31 +252,6 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     var session: ARSession {
         return sceneView.session
     }
-    
-  /*  override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        guard let touch = touches.first else { return }
-        
-        if let endNode = endNode {
-            // Reset
-            startNode?.removeFromParentNode()
-            self.startNode = nil
-            endNode.removeFromParentNode()
-            self.endNode = nil
-            labelT.text = "Distance: ?"
-            return
-        }
-        
-        let result = sceneView.hitTest(touch.location(in: sceneView),types: [ARHitTestResult.ResultType.featurePoint])
-        guard let hitResult = result.last else { return }
-        let hitTransform = SCNMatrix4((hitResult.worldTransform))
-        let hitVector = SCNVector3Make(hitTransform.m41, hitTransform.m42, hitTransform.m43)
-        // createBall(position: hitVector)
-        
-        if startNode == nil {
-            createBall(position: hitVector)
-        }
-        
-    } */
     
     func setupCamera() {
         guard let camera = sceneView.pointOfView?.camera else {
